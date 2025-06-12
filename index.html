@@ -46,6 +46,8 @@
                 requirement: requirement
             };
 
+            alert("กำลังจะส่งข้อมูล: " + JSON.stringify(dataToSend)); 
+            
             // 4. ส่งข้อมูลกลับไปหาบอทในรูปแบบ JSON String
             Telegram.WebApp.sendData(JSON.stringify(dataToSend));
             
