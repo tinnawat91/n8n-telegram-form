@@ -47,7 +47,7 @@
             };
 
             alert("กำลังจะส่งข้อมูล: " + JSON.stringify(dataToSend)); 
-            
+            console.log("Sending data: ",JSON.stringify(dataToSend));
             // 4. ส่งข้อมูลกลับไปหาบอทในรูปแบบ JSON String
             //Telegram.WebApp.sendData(JSON.stringify(dataToSend));
             Telegram.WebApp.sendData("hello from webapp");
