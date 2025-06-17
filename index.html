@@ -80,8 +80,9 @@
         body: JSON.stringify(data)
       })
       .then(() => {
-        tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว");
-        tg.close();
+        tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว", () => {
+          tg.close();
+        });
       })
       .catch((err) => {
         tg.showAlert("เกิดข้อผิดพลาด");
