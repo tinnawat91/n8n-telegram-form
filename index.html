@@ -79,13 +79,15 @@
         },
         body: JSON.stringify(data)
       })
-      .then(() => tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว"))
+      .then(() => {
+        tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว");
+        tg.close();
+      })
       .catch((err) => {
         tg.showAlert("เกิดข้อผิดพลาด");
         console.error(err);
       });
     });
-    tg.close();
   </script>
 </body>
 </html>
