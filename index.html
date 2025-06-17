@@ -2,12 +2,14 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>n8n Web Form for Telegram</title>
+  <title>Telegram Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
       background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
     }
     .container {
       background: #fff;
@@ -17,70 +19,73 @@
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
     label {
-      display: block;
       margin-top: 10px;
+      display: block;
     }
-    input, textarea, button {
+    input, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
       border-radius: 5px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>กรอกข้อมูล</h1>
-    <form id="myForm">
-      <label for="name">ชื่อ</label>
-      <input type="text" id="name" name="name" required>
+    <h2>กรอกข้อมูล</h2>
 
-      <label for="message">ข้อความ</label>
-      <textarea id="message" name="message" rows="4" required></textarea>
+    <label>ชื่อ</label>
+    <input type="text" id="name" placeholder="ชื่อ" required>
 
-      <button type="submit">ส่งข้อมูล</button>
-    </form>
+    <label>อีเมล</label>
+    <input type="email" id="email" placeholder="อีเมล" required>
+
+    <label>ข้อความ</label>
+    <textarea id="message" placeholder="ข้อความ" rows="4"></textarea>
   </div>
 
-  <!-- Telegram Web App JS -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.expand(); // ขยาย web app เต็มจอ
+    tg.expand();
 
-    document.getElementById('myForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    tg.MainButton.setText("ส่งข้อมูล");
+    tg.MainButton.show();
 
+    const user = tg.initDataUnsafe?.user;
+
+    tg.MainButton.onClick(() => {
       const data = {
-        name: this.name.value.trim(),
-        message: this.message.value.trim()
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        message: document.getElementById("message").value.trim(),
+        telegram_user_id: user?.id,
+        telegram_username: user?.username,
+        telegram_init_data: tg.initData
       };
 
-      console.log("กำลังส่งข้อมูล:", data);
+      console.log("ส่งข้อมูลไปยัง n8n:", data);
 
-      // ส่งข้อมูลกลับ Telegram
-      tg.sendData(JSON.stringify(data));
-
-      // แจ้งเตือนผู้ใช้
-      tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว!");
+      // ยิงตรงเข้า n8n webhook
+      fetch("https://tartinn-n8n.duckdns.org/webhook-test/form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"  // สำหรับ security (ค่อยไปเพิ่มภายหลัง)
+        },
+        body: JSON.stringify(data)
+      })
+      .then(() => tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว"))
+      .catch((err) => {
+        tg.showAlert("เกิดข้อผิดพลาด");
+        console.error(err);
+      });
     });
   </script>
+
 </body>
 </html>
