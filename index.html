@@ -34,7 +34,7 @@
 </head>
 <body>
   <p style="text-align: center; color: #888; font-size: 0.8em;">
-    Version: <span id="commit-sha">0.0.1</span>
+    Version: <span id="commit-sha">0.0.2</span>
   </p>
 
   <div class="container">
@@ -77,8 +77,8 @@
       fetch("https://tartinn-n8n.duckdns.org/webhook-test/telegram-miniapp", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"  // สำหรับ security (ค่อยไปเพิ่มภายหลัง)
+          "Content-Type": "application/json"
+          //"Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"  // สำหรับ security (ค่อยไปเพิ่มภายหลัง)
         },
         body: JSON.stringify(data)
       })
