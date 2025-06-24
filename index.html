@@ -1,94 +1,97 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Telegram Mini App</title>
+  <title>Terraform Infra Request</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
       margin: 0;
       padding: 20px;
     }
     .container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 600px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
     }
     label {
-      margin-top: 10px;
+      margin-top: 15px;
       display: block;
+      color: #555;
     }
     input, textarea {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-top: 5px;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    #version {
+      text-align: center;
+      color: #999;
+      font-size: 0.85em;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <p style="text-align: center; color: #888; font-size: 0.8em;">
-    Version: <span id="commit-sha">0.0.2</span>
-  </p>
 
   <div class="container">
-    <h2>กรอกข้อมูล</h2>
+    <h2>Request Infrastructure</h2>
 
-    <label>ชื่อ</label>
-    <input type="text" id="name" placeholder="ชื่อ" required>
+    <label for="repoName">GitLab Repository Name</label>
+    <input type="text" id="repoName" placeholder="e.g., my-awesome-infra" required>
 
-    <label>อีเมล</label>
-    <input type="email" id="email" placeholder="อีเมล" required>
-
-    <label>ข้อความ</label>
-    <textarea id="message" placeholder="ข้อความ" rows="4"></textarea>
+    <label for="requirements">Infrastructure Requirements</label>
+    <textarea id="requirements" placeholder="Describe what you need, e.g., EC2 in us-east-1, S3 for static files..." rows="4" required></textarea>
   </div>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <div id="version">Version: <span id="commit-sha">0.0.l</span></div>
 
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    tg.MainButton.setText("ส่งข้อมูล");
+    tg.MainButton.setText("Submit Request");
     tg.MainButton.show();
 
     const user = tg.initDataUnsafe?.user;
 
     tg.MainButton.onClick(() => {
       const data = {
-        name: document.getElementById("name").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        message: document.getElementById("message").value.trim(),
+        repo_name: document.getElementById("repoName").value.trim(),
+        requirements: document.getElementById("requirements").value.trim(),
         telegram_user_id: user?.id,
         telegram_username: user?.username,
         telegram_init_data: tg.initData
       };
 
-      console.log("ส่งข้อมูลไปยัง n8n:", data);
+      console.log("Sending to n8n:", data);
 
-      // ยิงตรงเข้า n8n webhook
       fetch("https://tartinn-n8n.duckdns.org/webhook-test/telegram-miniapp", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-          //"Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"  // สำหรับ security (ค่อยไปเพิ่มภายหลัง)
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"
         },
         body: JSON.stringify(data)
       })
       .then(() => {
-        tg.showAlert("ส่งข้อมูลเรียบร้อยแล้ว", () => {
-          tg.close();
-        });
+        tg.showAlert("Request submitted successfully", () => tg.close());
       })
       .catch((err) => {
-        tg.showAlert("เกิดข้อผิดพลาด");
+        tg.showAlert("An error occurred");
         console.error(err);
       });
     });
