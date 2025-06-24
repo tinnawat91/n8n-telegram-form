@@ -56,7 +56,7 @@
     <textarea id="requirements" placeholder="Describe what you need, e.g., EC2 in us-east-1, S3 for static files..." rows="4" required></textarea>
   </div>
 
-  <div id="version">Version: <span id="commit-sha">0.0.l</span></div>
+  <div id="version">Version: <span id="commit-sha">0.0.2</span></div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
@@ -82,8 +82,7 @@
       fetch("https://tartinn-n8n.duckdns.org/webhook-test/telegram-miniapp", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer 4721b8a88e66e9f260a1403ae11c886bfad8abf9f17c8994f1c6169f9c9fdd20"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       })
